@@ -46,6 +46,7 @@ Data collected from gpt-4o-mini (fixed interval) (collect_responses.py needs to 
      --seed    42 \
      --interval 20.0 \
      --checkpoint-every 50
+```
 
 Data collected from gpt-4o (random intervals between 10 and 25
 ```bash
@@ -58,6 +59,7 @@ Data collected from gpt-4o (random intervals between 10 and 25
      --seed    42 \
      --min-interval 10.0 \
      --checkpoint-every 50
+```
 
 4. **Data Analysis:**
 
