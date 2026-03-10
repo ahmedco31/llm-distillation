@@ -5,7 +5,9 @@ This repository contains the data collection and analysis pipeline for studying 
 ## Repository Layout
 
 - **`data/`**
-  - `responses_openai.csv`: The core dataset containing collected responses from the OpenAI API, including metadata like generation latency, category, and response length.
+  - `responses_combined.csv`: The core dataset containing collected responses from the OpenAI API (gpt-4o and gpt-4o-mini), including metadata like generation latency, category, and response length.  
+  - `responses_v2.csv`: Responses from gpt-4o only.  
+  - `responses_openai.csv`: Responses from gpt-4o-mini only
   
 - **`Wolfram/`**
   - Contains Wolfram Language notebooks (`.nb`) used for statistical analysis and anomaly detection. These notebooks analyze hardware physics patterns (token-to-latency mathematical trends) to differentiate between normal users and programmatic attackers.
