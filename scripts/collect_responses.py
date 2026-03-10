@@ -217,10 +217,12 @@ class ResponseCollector:
     def _sleep_to_respect_interval(self) -> None:
         if self.cfg.min_interval_s <= 0:
             return
+        # Random interval between min and min*2.5 to mimic human pacing
+        target = random.uniform(self.cfg.min_interval_s, self.cfg.min_interval_s * 2.5)
         now = time.time()
         elapsed = now - self._last_request_t
-        if elapsed < self.cfg.min_interval_s:
-            time.sleep(self.cfg.min_interval_s - elapsed)
+        if elapsed < target:
+            time.sleep(target - elapsed)
 
     def _backoff(self, attempt: int) -> float:
         # Exponential backoff with jitter, capped at 60s
@@ -394,7 +396,7 @@ def main() -> None:
     parser.add_argument("--balanced", action="store_true", help="Sample roughly evenly per category")
     parser.add_argument("--per-category", type=int, default=None, help="If balanced, how many per category")
 
-    parser.add_argument("--model", default="gpt-4o-mini", help="OpenAI model name (edit as needed)")
+    parser.add_argument("--model", default="gpt-4o", help="OpenAI model name (edit as needed)")
     parser.add_argument("--temperature", type=float, default=0.7)
     parser.add_argument("--max-tokens", type=int, default=500)
     parser.add_argument("--min-interval", type=float, default=20.0, help="Minimum seconds between requests")

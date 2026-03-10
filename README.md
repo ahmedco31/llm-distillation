@@ -33,6 +33,32 @@ It is recommended to use a virtual environment (e.g., `distillation_env`).
 
 *(Note: The distillation_env/ directory is intentionally ignored in .gitignore to prevent uploading large dependency files).*
 
-3. **Data Analysis:**
+3. **Collecting data:**
+
+Data collected from gpt-4o-mini (fixed interval) (collect_responses.py needs to be modified back to fixed intervals and different categories sizes)
+```bash
+   python scripts/collect_responses.py \
+     --prompts data/prompts_v1.json \
+     --output  data/responses_openai.csv \
+     --model   gpt-4o \
+     --limit   400 \
+     --shuffle \
+     --seed    42 \
+     --interval 20.0 \
+     --checkpoint-every 50
+
+Data collected from gpt-4o (random intervals between 10 and 25
+```bash
+   python scripts/collect_responses.py \
+     --prompts data/prompts_v2.json \
+     --output  data/responses_v2.csv \
+     --model   gpt-4o \
+     --limit   1200 \
+     --shuffle \
+     --seed    42 \
+     --min-interval 10.0 \
+     --checkpoint-every 50
+
+4. **Data Analysis:**
 
 Data analysis available in both python (`distillation_analysis_code.ipynb`) and Wolfram (`Wolfram/Data.nb`)

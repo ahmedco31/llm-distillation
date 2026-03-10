@@ -12,11 +12,11 @@ class PromptDesigner:
     
     def __init__(self):
         self.categories = {
-            'math_basic': {'count': 150, 'source': 'gsm8k'},
-            'logic_chain': {'count': 150, 'source': 'generated'},
-            'commonsense': {'count': 100, 'source': 'commonsense_qa'},
-            'code_simple': {'count': 100, 'source': 'mbpp'},
-            'abstract': {'count': 100, 'source': 'generated'}
+            'math_basic': {'count': 300, 'source': 'gsm8k'},
+            'logic_chain': {'count': 300, 'source': 'generated'},
+            'commonsense': {'count': 200, 'source': 'commonsense_qa'},
+            'code_simple': {'count': 200, 'source': 'mbpp'},
+            'abstract': {'count': 200, 'source': 'generated'}
         }
     
     def _estimate_difficulty(self, text: str) -> str:
@@ -38,9 +38,9 @@ class PromptDesigner:
         gsm8k = load_dataset("openai/gsm8k", "main", split="train")
         
         prompts = []
-        for idx, item in enumerate(gsm8k.select(range(150))):
+        for idx, item in enumerate(gsm8k.select(range(150, 450))):
             prompts.append({
-                'id': f'math_{idx:03d}',
+                'id': f'math_v2_{idx:03d}',
                 'prompt': item['question'],
                 'category': 'math_basic',
                 'difficulty': self._estimate_difficulty(item['question']),
@@ -57,7 +57,7 @@ class PromptDesigner:
         csqa = load_dataset("tau/commonsense_qa", split="train")
         
         prompts = []
-        for idx, item in enumerate(csqa.select(range(100))):
+        for idx, item in enumerate(csqa.select(range(100, 300))):
             # Format with choices
             choices_text = ", ".join(
                 f"({label}) {text}" 
@@ -67,7 +67,7 @@ class PromptDesigner:
             full_prompt = f"{item['question']}\nOptions: {choices_text}"
             
             prompts.append({
-                'id': f'common_{idx:03d}',
+                'id': f'common_v2_{idx:03d}',
                 'prompt': full_prompt,
                 'category': 'commonsense',
                 'difficulty': 'medium',
@@ -85,9 +85,9 @@ class PromptDesigner:
             mbpp = load_dataset("mbpp", split="train")
             
             prompts = []
-            for idx, item in enumerate(mbpp.select(range(100))):
+            for idx, item in enumerate(mbpp.select(range(100, 300))):
                 prompts.append({
-                    'id': f'code_{idx:03d}',
+                    'id': f'code_v2_{idx:03d}',
                     'prompt': item['text'],
                     'category': 'code_simple',
                     'difficulty': 'medium',
@@ -120,6 +120,11 @@ class PromptDesigner:
                     {'A': 'squares', 'B': 'rectangles', 'C': 'shapes'},
                     {'A': 'teachers', 'B': 'educators', 'C': 'professionals'},
                     {'A': 'laptops', 'B': 'computers', 'C': 'electronic devices'},
+                    {'A': 'nurses', 'B': 'healthcare workers', 'C': 'professionals'},
+                    {'A': 'oak trees', 'B': 'trees', 'C': 'plants'},
+                    {'A': 'Python', 'B': 'programming languages', 'C': 'tools'},
+                    {'A': 'whales', 'B': 'mammals', 'C': 'living things'},
+                    {'A': 'novels', 'B': 'books', 'C': 'written works'},
                 ],
                 'difficulty': 'easy'
             },
@@ -132,6 +137,11 @@ class PromptDesigner:
                     {'premise1': 'Some students study hard', 'premise2': 'All who study hard succeed'},
                     {'premise1': 'Every mammal has a spine', 'premise2': 'Dolphins are mammals'},
                     {'premise1': 'No metal conducts heat poorly', 'premise2': 'Copper is a metal'},
+                    {'premise1': 'All birds have wings', 'premise2': 'A penguin is a bird'},
+                    {'premise1': 'No fish can survive on land', 'premise2': 'A salmon is a fish'},
+                    {'premise1': 'All planets orbit a star', 'premise2': 'Earth is a planet'},
+                    {'premise1': 'Some languages are tonal', 'premise2': 'Mandarin is a tonal language'},
+                    {'premise1': 'No prime number is even except 2', 'premise2': '7 is a prime number'},
                 ],
                 'difficulty': 'medium'
             },
@@ -149,6 +159,11 @@ class PromptDesigner:
                      'observation': 'the alarm is ringing'},
                     {'condition': 'water freezes', 'consequence': 'the temperature is below 0°C', 
                      'observation': 'the water has frozen'},
+                    {'condition': 'the power goes out', 'consequence': 'the lights turn off', 'observation': 'the lights are off'},
+                    {'condition': 'a shape has 4 equal sides', 'consequence': 'it is a rhombus', 'observation': 'a shape has 4 equal sides'},
+                    {'condition': 'someone exercises daily', 'consequence': 'they improve their fitness', 'observation': 'Maria exercises daily'},
+                    {'condition': 'a file is deleted', 'consequence': 'it moves to the trash', 'observation': 'the file was deleted'},
+                    {'condition': 'it snows heavily', 'consequence': 'roads become slippery', 'observation': 'it snowed heavily last night'},
                 ],
                 'difficulty': 'medium'
             },
@@ -161,6 +176,11 @@ class PromptDesigner:
                     {'group': 'fruits', 'property': 'sweet', 'specific': 'a lemon'},
                     {'group': 'students', 'property': 'good at math', 'specific': 'John'},
                     {'group': 'politicians', 'property': 'honest', 'specific': 'the senator'},
+                    {'group': 'doctors', 'property': 'specialized in surgery', 'specific': 'Dr. Smith'},
+                    {'group': 'cars', 'property': 'electric', 'specific': 'a Toyota Corolla'},
+                    {'group': 'languages', 'property': 'written left to right', 'specific': 'Arabic'},
+                    {'group': 'athletes', 'property': 'professional', 'specific': 'James'},
+                    {'group': 'vegetables', 'property': 'green', 'specific': 'a carrot'},
                 ],
                 'difficulty': 'hard'
             },
@@ -173,6 +193,11 @@ class PromptDesigner:
                     {'statement_a': 'Every student passed', 'statement_b': 'At least one student failed'},
                     {'statement_a': 'The box is red', 'statement_b': 'The box is blue'},
                     {'statement_a': 'It will rain tomorrow', 'statement_b': 'The weather will be sunny'},
+                    {'statement_a': 'All swans are white', 'statement_b': 'Some swans are black'},
+                    {'statement_a': 'The file was saved', 'statement_b': 'No changes were written to disk'},
+                    {'statement_a': 'The train arrives at noon', 'statement_b': 'The train does not arrive before 1 PM'},
+                    {'statement_a': 'All numbers are positive', 'statement_b': 'Zero is a number'},
+                    {'statement_a': 'She passed every exam', 'statement_b': 'She failed her biology exam'},
                 ],
                 'difficulty': 'hard'
             },
@@ -271,6 +296,11 @@ class PromptDesigner:
                     {'a1': 'book', 'a2': 'read', 'b1': 'music'},
                     {'a1': 'up', 'a2': 'down', 'b1': 'left'},
                     {'a1': 'happy', 'a2': 'sad', 'b1': 'love'},
+                    {'a1': 'pen', 'a2': 'write', 'b1': 'knife'},
+                    {'a1': 'sun', 'a2': 'solar system', 'b1': 'Earth'},
+                    {'a1': 'flour', 'a2': 'bread', 'b1': 'grapes'},
+                    {'a1': 'fast', 'a2': 'slow', 'b1': 'loud'},
+                    {'a1': 'chapter', 'a2': 'book', 'b1': 'verse'},
                 ],
                 'difficulty': 'medium'
             },
@@ -285,6 +315,11 @@ class PromptDesigner:
                     {'sequence': '1, 4, 9, 16, 25, __'},
                     {'sequence': '2, 6, 12, 20, 30, __'},
                     {'sequence': '5, 10, 20, 40, __'},
+                    {'sequence': '1, 2, 4, 7, 11, __'},
+                    {'sequence': '0, 1, 3, 6, 10, __'},
+                    {'sequence': '81, 27, 9, 3, __'},
+                    {'sequence': '1, 8, 27, 64, __'},
+                    {'sequence': '10, 9, 7, 4, __'},
                 ],
                 'difficulty': 'medium'
             },
@@ -296,6 +331,10 @@ class PromptDesigner:
                     {'sequence': 'Z, Y, X, W, __'},
                     {'sequence': 'B, D, F, H, __'},
                     {'sequence': 'AZ, BY, CX, DW, __'},
+                    {'sequence': 'A, E, I, M, __'},
+                    {'sequence': 'AA, BB, CC, DD, __'},
+                    {'sequence': 'ZA, YB, XC, WD, __'},
+                    {'sequence': 'A, Z, B, Y, C, __'},
                 ],
                 'difficulty': 'medium'
             },
@@ -307,6 +346,10 @@ class PromptDesigner:
                     {'series': '2, 5, 11, 23, 47'},
                     {'series': 'Monday, Wednesday, Friday, __'},
                     {'series': 'January, March, May, July, __'},
+                    {'series': '0, 1, 4, 9, 16, 25'},
+                    {'series': '1, 2, 6, 24, 120'},
+                    {'series': 'Sunday, Tuesday, Thursday, __'},
+                    {'series': 'February, April, June, August, __'},
                 ],
                 'difficulty': 'hard'
             },
@@ -319,6 +362,11 @@ class PromptDesigner:
                     {'items': '2, 4, 6, 8, 9, 10'},
                     {'items': 'red, green, blue, heavy'},
                     {'items': 'square, circle, triangle, cube'},
+                    {'items': 'piano, guitar, violin, microphone'},
+                    {'items': '3, 5, 7, 9, 11'},
+                    {'items': 'Paris, London, Tokyo, Amazon'},
+                    {'items': 'walking, running, swimming, sleeping'},
+                    {'items': 'circle, oval, sphere, ellipse'},
                 ],
                 'difficulty': 'medium'
             },
@@ -353,11 +401,11 @@ class PromptDesigner:
         
         # Load/generate all categories
         all_prompts = []
-        all_prompts.extend(self.load_math_prompts())           # 150
-        all_prompts.extend(self.load_commonsense_prompts())    # 100
-        all_prompts.extend(self.load_code_prompts())           # 100
-        all_prompts.extend(self.generate_logic_prompts(150))   # 150
-        all_prompts.extend(self.generate_abstract_prompts(100)) # 100
+        all_prompts.extend(self.load_math_prompts())           # 300
+        all_prompts.extend(self.load_commonsense_prompts())    # 200
+        all_prompts.extend(self.load_code_prompts())           # 200
+        all_prompts.extend(self.generate_logic_prompts(300))   # 300
+        all_prompts.extend(self.generate_abstract_prompts(200)) # 200
         
         # Verify counts
         from collections import Counter
@@ -393,8 +441,8 @@ if __name__ == "__main__":
     Path('data').mkdir(exist_ok=True)
     
     designer = PromptDesigner()
-    designer.export_prompt_dataset('data/prompts_v1.json')
+    designer.export_prompt_dataset('data/prompts_v2.json')
     
     print("\n" + "=" * 50)
-    print("✅ COMPLETE: 600 prompts ready for collection!")
+    print("✅ COMPLETE: 1200 prompts ready for collection!")
     print("=" * 50)
