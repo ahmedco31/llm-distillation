@@ -16,8 +16,8 @@ This repository contains the data collection and analysis pipeline for studying 
   - Generated charts and visualizations (e.g., `response_length_analysis.png`, histograms, and box plots) visualizing the differences in query patterns and response lengths across different categories.
 
 - **Scripts** (e.g., `collect_responses.py`)
-  - Python scripts used to interact with the OpenAI API, enforce specific request intervals (e.g., 20-second delays to avoid rate-limit flagging), and log the resulting metadata to the CSV dataset.
-  - Python data analysis scripts utilizing `pandas` and `matplotlib` for initial EDA and metric extraction.
+  - Python scripts used to interact with the OpenAI API, and log the resulting metadata to the CSV dataset.
+  - Other scripts for prompts creation and data managment.
 
 ## Setup & Requirements
 
